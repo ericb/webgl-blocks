@@ -1,19 +1,23 @@
 if(typeof BlockDemo == 'undefined') { BlockDemo = {}; }
 var test = false;
 BlockDemo = Koi.define({
-    'canvas':   null,
-    'gl':       null,
+    'canvas':         null,
+    'gl':             null,
+    'cameraDistance': null,
     
     init: function() {
         //this.canvas = document.getElementById('c');
         //this.gl     = this.canvas.getContext('experimental-webgl');
+        this.cameraDistance = 5;
     },
     
     start: function() {
         var scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000 );
         var camera = this.camera;
-        var renderer = new THREE.WebGLRenderer({ antialias: true, shadowMapSoft: true });
+        
+
+        var renderer = new THREE.WebGLRenderer({ antialias: true, shadowMapEnabled: true, shadowMapSoft: true });
         renderer.setClearColorHex(0x000000, 1);
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( renderer.domElement );
@@ -38,18 +42,25 @@ BlockDemo = Koi.define({
             return g;
         };
         
-        var addlight = function(x,y,z) {
-            var light = new THREE.SpotLight( 0xffffff, 2);
+        var addlight = function(x,y,z, target) {
+            var light = new THREE.SpotLight( 0xffffff, 1.2);
             light.castShadow = true;
-            light.shadowDarkness = 1;
-            light.cameraVisible;
+            light.shadowDarkness = 0.5;
             light.shadowCameraVisible;
+            light.shadowCameraNear = 0.01;
+            light.shadowCameraVisible = true;
             light.position.set(x, y, z);
+            light.target = target;
             scene.add( light );
+            
+            //var helper = new THREE.SpotLightHelper( light );
+            //scene.add(helper);
             return light;
         };
         
-        addlight(5,5,5);
+        //addlight(0,5,0, 0, 10, 0);
+        addlight(2,8,2, scene);
+        addlight(4,2,4, scene);
         //addlight(-10,-10,50);
         
         var rows  = 5;
@@ -74,7 +85,8 @@ BlockDemo = Koi.define({
         //camera.position.y = 1;
         camera.lookAt( grass.mesh.position );
               console.log(camera);   
-        var angle = 0; 
+        var angle = 0;
+        var _this = this;
         var render = function() { 
             requestAnimationFrame(render);
             //cube.rotation.x += 0.05; 
@@ -91,8 +103,8 @@ BlockDemo = Koi.define({
                 if(angle > 360) { angle = 0; }
 
                 camera.lookAt({ x: 0, y: 0, z: 0  }); 
-                camera.position.z = (Math.cos( angle ) * 5);
-                camera.position.x = (Math.sin( angle ) * 5);
+                camera.position.z = (Math.cos( angle ) * _this.cameraDistance);
+                camera.position.x = (Math.sin( angle ) * _this.cameraDistance);
             }
             renderer.render(scene, camera);
         };
