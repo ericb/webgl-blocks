@@ -22,3 +22,14 @@ var GrassTile = Koi.extend(Tile, {
         this.mesh.receiveShadow = true;
     }
 }, true);
+
+
+var BoxTile = Koi.extend(Tile, {
+    init: function() {
+        this.geometry = new THREE.CubeGeometry(1, 1, 1, 1, 1, 1);
+        var box_material = new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture('assets/textures/box.jpg'), overdraw: true } );
+        this.mesh = new THREE.Mesh( this.geometry, box_material );
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
+    }
+}, true);

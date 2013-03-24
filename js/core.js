@@ -31,8 +31,17 @@ BlockDemo = Koi.define({
         var grass = new GrassTile();
         //scene.add( grass.mesh );
         
-        var addgrass = function( x, y, z ) {
-            var g = new GrassTile();
+        var add_tile = function( type, x, y, z ) {
+            var g = false;
+            switch(type) {
+                case 'grass':
+                    g = new GrassTile();
+                    break;
+                
+                case 'box':
+                    g = new BoxTile();
+                    break;
+            }
             x -= 2;
             z -= 2;
             g.mesh.position.x = x;
@@ -43,7 +52,7 @@ BlockDemo = Koi.define({
         };
         
         var addlight = function(x,y,z, target) {
-            var light = new THREE.SpotLight( 0xffffff, 1.2);
+            var light = new THREE.SpotLight( 0xffffff, 1);
             light.castShadow = true;
             light.shadowDarkness = 0.5;
             light.shadowCameraVisible;
@@ -61,6 +70,7 @@ BlockDemo = Koi.define({
         //addlight(0,5,0, 0, 10, 0);
         addlight(2,8,2, scene);
         addlight(4,2,4, scene);
+        addlight(-4,2,-4, scene);
         //addlight(-10,-10,50);
         
         var rows  = 5;
@@ -68,23 +78,27 @@ BlockDemo = Koi.define({
         
         for(var i = 0; i < rows; i++) {
             for(var n = 0; n < slots; n++) {
-                addgrass(i, 1, n);
+                add_tile('grass', i, 0, n);
             }
         }
         
-        addgrass(2, 1.25, 2);
-        addgrass(3, 1.25, 3);
-        addgrass(1, 1.25, 4);
-        addgrass(1, 1.50, 4);
-        addgrass(4, 1.25, 4);
+        add_tile('grass', 2, 0.25, 2);
+        add_tile('box',   3, 0.625, 3);
+        add_tile('grass', 1, 0.25, 4);
+        add_tile('grass', 1, 0.50, 4);
+        add_tile('grass', 4, 0.25, 4);
+        add_tile('box',   1, 0.625, 1);
+        add_tile('box',   0, 0.625, 0);
+        add_tile('box',   0, 1.625, 0);
+        
         
         //camera.position.z = 8;
-        camera.position.y = 5;
+        camera.position.y = 3;
         
         //camera.position.z = 2;
         //camera.position.y = 1;
         camera.lookAt( grass.mesh.position );
-              console.log(camera);   
+  
         var angle = 0;
         var _this = this;
         var render = function() { 
